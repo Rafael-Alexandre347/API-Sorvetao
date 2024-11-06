@@ -5,6 +5,6 @@ import { createUserDTO } from '../DTOS/user.dto'
 
 const router = Router() 
 
-router.post('/',validate(createUserDTO), createUser) 
+router.post('/', createUser) 
 
 export default router 

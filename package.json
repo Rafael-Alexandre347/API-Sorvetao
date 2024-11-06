@@ -5,7 +5,8 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "express": "^4.21.1",
-    "routes": "^2.1.0"
+    "routes": "^2.1.0",
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@swc/core": "^1.8.0",
