@@ -1,11 +1,15 @@
 {
   "dependencies": {
     "express": "^4.21.1",
-    "routes": "^2.1.0"
+    "routes": "^2.1.0",
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
+    "@swc/core": "^1.8.0",
+    "@swc/helpers": "^0.5.13",
     "@types/express": "^5.0.0",
     "@types/node": "^22.9.0",
+    "nodemon": "^3.1.7",
     "typescript": "^5.6.3"
   },
   "name": "api-sorvetao",
