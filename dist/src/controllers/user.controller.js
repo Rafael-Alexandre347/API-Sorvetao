@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createUser = void 0;
+exports.authenticateUser = exports.createUser = void 0;
 const user_service_1 = require("../services/user.service");
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -21,3 +21,17 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.createUser = createUser;
+const authenticateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return res.status(400).json({ message: 'Deve-se inserir e-mail e senha!' });
+        }
+        const token = yield (0, user_service_1.authenticateUserService)(email, password);
+        return res.status(200).json({ token });
+    }
+    catch (error) {
+        return res.status(400).json({ message: error });
+    }
+});
+exports.authenticateUser = authenticateUser;

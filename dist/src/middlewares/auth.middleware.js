@@ -31,42 +31,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authenticateUserService = exports.createUserService = void 0;
-const bcrypt_1 = __importDefault(require("bcrypt"));
-const user_repositorie_1 = require("../repositories/user.repositorie");
+exports.auth = void 0;
 const jose = __importStar(require("jose"));
-const createUserService = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield (0, user_repositorie_1.findUserByEmail)(data.email);
-    if (user) {
-        throw new Error('Usuário já existe');
+const auth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
+    if (!token) {
+        return res.status(401).json({ message: 'Token não identificado' });
     }
-    const password = yield bcrypt_1.default.hash(data.password, 10);
-    return (0, user_repositorie_1.createUser)(Object.assign(Object.assign({}, data), { password }));
+    try {
+        const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+        const payload = yield jose.jwtVerify(token, secret);
+        if (!payload) {
+            return res.status(401).json({ message: "Token inválido :(" });
+        }
+        req.user = payload.payload;
+        next();
+    }
+    catch (error) {
+        return res.status(401).json({ message: 'Token inválido :(' });
+    }
 });
-exports.createUserService = createUserService;
-const authenticateUserService = (email, password) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield (0, user_repositorie_1.findUserByEmail)(email);
-    if (!user) {
-        throw new Error("Usuário não encontrado :(");
-    }
-    const isValid = yield bcrypt_1.default.compare(password, user.password);
-    if (!isValid) {
-        throw new Error("Senha Inválida");
-    }
-    const payload = { id: user.id, email: user.email };
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-    const alg = 'HS256';
-    const token = yield new jose.SignJWT(payload)
-        .setProtectedHeader({ alg })
-        .setIssuedAt()
-        .setIssuer("http://localhost:3000")
-        .setSubject('users')
-        .setExpirationTime('1h')
-        .sign(secret);
-    return token;
-});
-exports.authenticateUserService = authenticateUserService;
+exports.auth = auth;

@@ -1,11 +1,24 @@
 import { Request, Response } from 'express' 
-import { createUserService } from '../services/user.service' 
+import { authenticateUserService ,createUserService } from '../services/user.service' 
 
 export const createUser = async (req: Request, res: Response) => {
-  try {
-    const user = await createUserService(req.body)
-    return res.status(201).json(user) 
-  } catch (error) {
-    return res.status(400).json({ message: error })
-  }
+  	try {
+    	const user = await createUserService(req.body)
+		return res.status(201).json(user)
+	} catch (error) {
+		return res.status(400).json({ message: error })
+	}
+}
+
+export const authenticateUser = async (req: Request,res:Response) =>{
+	try{
+		const {email,password} = req.body;
+		if(!email || !password){
+			return res.status(400).json({message: 'Deve-se inserir e-mail e senha!'});
+		}
+		const token = await authenticateUserService(email,password);
+		return res.status(200).json({token});
+	}catch(error){
+		return res.status(400).json({message:error});
+	}
 }
