@@ -8,19 +8,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createUserService = void 0;
-const bcrypt_1 = __importDefault(require("bcrypt"));
 const user_repositorie_1 = require("../repositories/user.repositorie");
 const createUserService = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield (0, user_repositorie_1.findUserByEmail)(data.email);
     if (user) {
         throw new Error('Usuário já existe');
     }
-    const password = yield bcrypt_1.default.hash(data.password, 10);
-    return (0, user_repositorie_1.createUser)(Object.assign(Object.assign({}, data), { password }));
+    console.log("teste");
+    // const password = await bcrypt.hash(data.password, 10) 
+    // return createUser({ ...data, password });
 });
 exports.createUserService = createUserService;

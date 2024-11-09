@@ -1,10 +1,10 @@
 import { Router } from 'express' 
 import { createUser } from '../controllers/user.controller'
-import { validate } from '../middlewares/validate.middleware' 
-import { createUserDTO } from '../DTOS/user.dto'
+import { CreateUserDTO } from '../DTOS/user.dto'
+import { validate } from '../middlewares/validate.middleware'
 
-const router = Router() 
+const router = Router();
 
-router.post('/', createUser) 
+router.post('/',validate(CreateUserDTO), createUser);
 
-export default router 
+export default router;
