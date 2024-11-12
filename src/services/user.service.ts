@@ -2,7 +2,6 @@ import bcrypt from 'bcrypt'
 import { CreateUserDTO } from '../DTOS/user.dto'
 import { createUser, findUserByEmail } from '../repositories/user.repository'
 import * as jose from 'jose';
-import fs from 'fs';
 
 export const createUserService = async (data: CreateUserDTO) => {
 	const user = await findUserByEmail(data.email)
