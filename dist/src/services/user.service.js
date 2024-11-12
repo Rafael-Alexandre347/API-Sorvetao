@@ -35,22 +35,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.conciliateService = exports.authenticateUserService = exports.createUserService = void 0;
+exports.authenticateUserService = exports.createUserService = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
-const user_repositorie_1 = require("../repositories/user.repositorie");
+const user_repository_1 = require("../repositories/user.repository");
 const jose = __importStar(require("jose"));
-const fs_1 = __importDefault(require("fs"));
 const createUserService = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield (0, user_repositorie_1.findUserByEmail)(data.email);
+    const user = yield (0, user_repository_1.findUserByEmail)(data.email);
     if (user) {
         throw new Error('Usuário já existe');
     }
     const password = yield bcrypt_1.default.hash(data.password, 10);
-    return (0, user_repositorie_1.createUser)(Object.assign(Object.assign({}, data), { password }));
+    return (0, user_repository_1.createUser)(Object.assign(Object.assign({}, data), { password }));
 });
 exports.createUserService = createUserService;
 const authenticateUserService = (email, password) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield (0, user_repositorie_1.findUserByEmail)(email);
+    const user = yield (0, user_repository_1.findUserByEmail)(email);
     if (!user) {
         throw new Error("Usuário não encontrado :(");
     }
@@ -71,13 +70,3 @@ const authenticateUserService = (email, password) => __awaiter(void 0, void 0, v
     return token;
 });
 exports.authenticateUserService = authenticateUserService;
-const conciliateService = (tempFile) => __awaiter(void 0, void 0, void 0, function* () {
-    const vendas = fs_1.default.readFile('../temp/' + tempFile, 'utf8', (err, data) => {
-        if (err) {
-            throw new Error(`Problema na leitura do arquivo: ${err}`);
-        }
-        return data;
-    });
-    return vendas;
-});
-exports.conciliateService = conciliateService;

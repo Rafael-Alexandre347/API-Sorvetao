@@ -1,5 +1,6 @@
 import { Router } from 'express' 
-import { authenticateUser, conciliate, createUser } from '../controllers/user.controller'
+import { authenticateUser, createUser } from '../controllers/user.controller'
+import { conciliate } from '../controllers/conciliation.controller'
 import { CreateUserDTO } from '../DTOS/user.dto'
 import { validate } from '../middlewares/validate.middleware'
 

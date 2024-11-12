@@ -22,5 +22,5 @@ export class saveReportDTO{
     bandeira!:string
 
     @IsNotEmpty()
-    conciliado!:number
+    conciliado!:boolean
 }
