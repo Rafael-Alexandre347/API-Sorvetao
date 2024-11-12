@@ -1,7 +1,8 @@
 import bcrypt from 'bcrypt'
 import { CreateUserDTO } from '../DTOS/user.dto'
-import { createUser, findUserByEmail } from '../repositories/user.repositorie'
+import { createUser, findUserByEmail } from '../repositories/user.repository'
 import * as jose from 'jose';
+import fs from 'fs';
 
 export const createUserService = async (data: CreateUserDTO) => {
 	const user = await findUserByEmail(data.email)
@@ -9,9 +10,9 @@ export const createUserService = async (data: CreateUserDTO) => {
 	if (user) {
 		throw new Error('Usuário já existe')
 	}
-	const password = await bcrypt.hash(data.password, 10) 
+	const password = await bcrypt.hash(data.password, 10)
 
-	return createUser({ ...data, password});
+	return createUser({...data, password});
 }
 
 export const authenticateUserService = async (email:string,password:string) => {

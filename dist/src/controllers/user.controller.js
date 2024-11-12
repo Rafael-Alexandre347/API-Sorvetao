@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authenticateUser = exports.createUser = void 0;
+exports.conciliate = exports.authenticateUser = exports.createUser = void 0;
 const user_service_1 = require("../services/user.service");
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -35,3 +35,14 @@ const authenticateUser = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.authenticateUser = authenticateUser;
+const conciliate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { tempFile } = req.body;
+        const file = yield (0, user_service_1.conciliateService)(tempFile);
+        return res.status(200).json({ file });
+    }
+    catch (error) {
+        return res.status(400).json({ message: error });
+    }
+});
+exports.conciliate = conciliate;

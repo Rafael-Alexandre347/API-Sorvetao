@@ -35,10 +35,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authenticateUserService = exports.createUserService = void 0;
+exports.conciliateService = exports.authenticateUserService = exports.createUserService = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const user_repositorie_1 = require("../repositories/user.repositorie");
 const jose = __importStar(require("jose"));
+const fs_1 = __importDefault(require("fs"));
 const createUserService = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield (0, user_repositorie_1.findUserByEmail)(data.email);
     if (user) {
@@ -70,3 +71,13 @@ const authenticateUserService = (email, password) => __awaiter(void 0, void 0, v
     return token;
 });
 exports.authenticateUserService = authenticateUserService;
+const conciliateService = (tempFile) => __awaiter(void 0, void 0, void 0, function* () {
+    const vendas = fs_1.default.readFile('../temp/' + tempFile, 'utf8', (err, data) => {
+        if (err) {
+            throw new Error(`Problema na leitura do arquivo: ${err}`);
+        }
+        return data;
+    });
+    return vendas;
+});
+exports.conciliateService = conciliateService;

@@ -19,3 +19,14 @@ model User {
   email String  @unique
   password String
 }
+
+model Conciliation{
+  id Int @id @default(autoincrement())
+  vVenda Decimal
+  vReal Decimal
+  data DateTime
+  taxa Decimal @default(0)
+  pagamento String
+  bandeira String
+  conciliado Boolean @default(false)
+}
