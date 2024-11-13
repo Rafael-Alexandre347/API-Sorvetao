@@ -9,6 +9,6 @@ export const conciliate = async (req: Request, res:Response) =>{
 		const content = await conciliateService(tempFile);
 		return res.status(200).json(content);
 	}catch(error){
-		return res.status(400).json({message:error});
+		return res.status(400).json({message: error});
 	}
 }
