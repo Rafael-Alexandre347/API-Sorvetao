@@ -11,9 +11,9 @@ export const conciliateService = async (tempFile: string) => {
 
 	const credentials = base64.encode('a7bb48c3-c6a6-49d4-b6f5-f9cd9180c7e1:wF8Q60Xs0L');
 	const formData = new URLSearchParams({
-		grant_type:'client_credentials'
+		"grant_type":"client_credentials"
 	});
-	const tokenAd = await fetch('https://rl7-sandbox-api.useredecloud.com.br/',{
+	const tokenAd = await fetch('https://rl7-sandbox-api.useredecloud.com.br/oauth2/token',{
 		method:'POST',
 		headers:{
 			'Authorization': `Basic ${credentials}`,
@@ -21,7 +21,5 @@ export const conciliateService = async (tempFile: string) => {
 		},
 		body:formData.toString()
 	});
-	console.log(tokenAd);
+	return tokenAd.json();
 }
-
-
