@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
-import { CreateUserDTO } from '../DTOS/user.dto'
-import { createUser, findUserByEmail } from '../repositories/user.repository'
+import { CreateUserDTO, UpdateUserDto } from '../DTOS/user.dto'
+import { createUser, findUserByEmail, updateUser } from '../repositories/user.repository'
 import * as jose from 'jose';
 
 export const createUserService = async (data: CreateUserDTO) => {
@@ -12,6 +12,34 @@ export const createUserService = async (data: CreateUserDTO) => {
 	const password = await bcrypt.hash(data.password, 10)
 
 	return createUser({...data, password});
+}
+
+export const findUserByEmailService = async (email: string) => {
+    if (!email) {
+        throw new Error('O email é obrigatório.');
+    }
+    
+    const user = await findUserByEmail(email);
+    if (!user) {
+        throw new Error('Usuário não encontrado.');
+    }
+    
+    return user;
+};
+
+export const updateUserService = async (email: string, data: UpdateUserDto) => {
+	const user = await findUserByEmail(email)
+  
+	if (!user) {
+	  throw new Error('Usuário não encontrado')
+	}
+	
+	const updatedData = {
+		...data,
+		password: data.password ? await bcrypt.hash(data.password, 10) : user.password,
+	};
+  
+	return updateUser(email, updatedData)
 }
 
 export const authenticateUserService = async (email:string,password:string) => {

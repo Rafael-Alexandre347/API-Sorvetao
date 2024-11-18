@@ -1,5 +1,5 @@
 import { Request, Response } from 'express' 
-import { authenticateUserService ,createUserService } from '../services/user.service' 
+import { authenticateUserService ,createUserService, findUserByEmailService, updateUserService } from '../services/user.service' 
 
 export const createUser = async (req: Request, res: Response) => {
   	try {
@@ -9,6 +9,25 @@ export const createUser = async (req: Request, res: Response) => {
 		return res.status(400).json({ message: error })
 	}
 }
+
+export const findUserByEmail = async (req: Request, res: Response) => {
+    try {
+        const { email } = req.params;
+        const user = await findUserByEmailService(email);
+        return res.status(200).json(user);
+    } catch (error: any) {
+        return res.status(400).json({ message: error.message });
+    }
+};
+
+export const updateUser = async (req: Request, res: Response) => {
+	try {
+	  const user = await updateUserService(String(req.params.email), req.body)
+	  return res.status(200).json(user);
+	} catch (error) {
+	  return res.status(400).json({ message: error });
+	}
+  }
 
 export const authenticateUser = async (req: Request,res:Response) =>{
 	try{
