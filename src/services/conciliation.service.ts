@@ -42,12 +42,21 @@ export const conciliateService = async (tempFile: string) => {
 		vendas[e].push('0')
 		if (typeof vendas[e][6] === 'string')
 			vendas[e][6] = vendas[e][6].replace("R$ ", '').replace(".","").replace(",",".");
+		
+		if(typeof vendas[e][3] === 'string'){
+			vendas[e][3] = vendas[e][3].split('/')[2]+"-"+vendas[e][3].split('/')[1]+"-"+vendas[e][3].split('/')[0]
+			console.log(vendas[e][3]);
+		}
 	}
 
 	for(let i in ad){
+		// console.log("Valor: "+ad[i].amount+" data: "+ad[i].saleDate);
 		for(let x in vendas){
-			if(vendas[x][7] == "0"){
-
+			if(vendas[x][7] == "0" &&
+			vendas[x][6] ==  ad[i].amount &&
+			vendas[x][3] == ad[i].saleDate &&
+			vendas[x][7] == "0"){
+			
 			}
 		}
 	}
