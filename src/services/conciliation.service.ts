@@ -10,10 +10,12 @@ export const conciliateService = async (tempFile: string) => {
 		.map(e => e.split(';').map(e => e.trim()));
 
 	const credentials = base64.encode('a7bb48c3-c6a6-49d4-b6f5-f9cd9180c7e1:wF8Q60Xs0L');
-	const url = 'https://rl7-sandbox-api.useredecloud.com.br';
+	const url = 'https://rl7-sandbox-api.useredecloud.com.br';//Teste
+	// const url = 'https://api.userede.com.br/redelabs';//Produção
 	let initDate = '2024-09-01',
 		endDate = '2024-09-30'
-	const loja = 13381369;
+	const loja = 13381369;//Teste
+	// const loja = 96575034;//Produção
 	const formData = new URLSearchParams({
 		"grant_type":"client_credentials"
 	});
@@ -36,28 +38,65 @@ export const conciliateService = async (tempFile: string) => {
 	let ad = await adquirente.json();
 	ad = ad.content.transactions;
 
-	let tax = 2.5;
+	let tax = 0;
 
 	for(let e in vendas){
 		vendas[e].push('0')
 		if (typeof vendas[e][6] === 'string')
 			vendas[e][6] = vendas[e][6].replace("R$ ", '').replace(".","").replace(",",".");
 		
-		if(typeof vendas[e][3] === 'string'){
+		if(typeof vendas[e][3] === 'string')
 			vendas[e][3] = vendas[e][3].split('/')[2]+"-"+vendas[e][3].split('/')[1]+"-"+vendas[e][3].split('/')[0]
-			console.log(vendas[e][3]);
-		}
 	}
 
+	let report = [];
 	for(let i in ad){
 		// console.log("Valor: "+ad[i].amount+" data: "+ad[i].saleDate);
+		// console.log(ad[i]);
+		let bandeira;
 		for(let x in vendas){
-			if(vendas[x][7] == "0" &&
-			vendas[x][6] ==  ad[i].amount &&
-			vendas[x][3] == ad[i].saleDate &&
-			vendas[x][7] == "0"){
-			
+			if(ad[i].cardNumber[0] == "4")
+				bandeira = 'Visa';
+			else if(Number(ad[i].cardNumber.split('*')[0]) >= 2221 && Number(ad[i].cardNumber.split('*')[0]) <= 2720)
+				bandeira = 'Mastercard';
+			else if(ad[i].cardNumber[0]+ad[i].cardNumber[1] == '51' ||
+					ad[i].cardNumber[0]+ad[i].cardNumber[1] == '52' ||
+					ad[i].cardNumber[0]+ad[i].cardNumber[1] == '53' ||
+					ad[i].cardNumber[0]+ad[i].cardNumber[1] == '54' ||
+					ad[i].cardNumber[0]+ad[i].cardNumber[1] == '55')
+				bandeira = 'Mastercard';
+			else
+				bandeira = 'Outros';
+			if(vendas[x][7] === "0" &&
+				vendas[x][6] ==  ad[i].amount &&
+				vendas[x][3] == ad[i].saleDate &&
+				ad[i].status == 'APROVED'){
+				vendas[x][7] = '1';
+				report.push({
+					"id":ad[i].saleSummaryNumber,
+					"vVenda":vendas[x][6],
+					"vReal":ad[i].amount,
+					"data":vendas[x][3],
+					"taxa":ad[i].feeTotal,
+					"pagamento":ad[i].modality.type,
+					"bandeira":bandeira,
+					"conciliado":"Sim",
+				});
+				ad[i].status = 'CONCILIADO';
 			}
 		}
+		if(ad[i].status != 'CONCILIADO'){
+			report.push({
+				"id":ad[i].saleSummaryNumber,
+				"vVenda":"?",
+				"vReal":ad[i].amount,
+				"data":ad[i].saleDate,
+				"taxa":ad[i].feeTotal,
+				"pagamento":ad[i].modality.type,
+				"bandeira":bandeira,
+				"conciliado":"Não",
+			});
+		}
 	}
+	console.log(report)
 }

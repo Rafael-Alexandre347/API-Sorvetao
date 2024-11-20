@@ -1,7 +1,11 @@
 import { Decimal } from '@prisma/client/runtime/library'
-import { IsNotEmpty, IsDate } from 'class-validator'
+import { IsNotEmpty, IsDate, IsNumber } from 'class-validator'
 
 export class saveReportDTO{
+    @IsNotEmpty()
+    @IsNumber()
+    id!:number
+
     @IsNotEmpty()
     vVenda!:number
     
@@ -23,4 +27,15 @@ export class saveReportDTO{
 
     @IsNotEmpty()
     conciliado!:boolean
+}
+
+export class getReportDTO{
+    @IsNumber()
+    id?:number
+
+    @IsNotEmpty()
+    vReal!:number
+
+    @IsNotEmpty()
+    data!:string
 }
