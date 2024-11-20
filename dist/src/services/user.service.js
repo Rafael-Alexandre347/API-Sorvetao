@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authenticateUserService = exports.createUserService = void 0;
+exports.authenticateUserService = exports.updateUserService = exports.findUserByEmailService = exports.createUserService = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const user_repository_1 = require("../repositories/user.repository");
 const jose = __importStar(require("jose"));
@@ -48,6 +48,26 @@ const createUserService = (data) => __awaiter(void 0, void 0, void 0, function* 
     return (0, user_repository_1.createUser)(Object.assign(Object.assign({}, data), { password }));
 });
 exports.createUserService = createUserService;
+const findUserByEmailService = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!email) {
+        throw new Error('O email é obrigatório.');
+    }
+    const user = yield (0, user_repository_1.findUserByEmail)(email);
+    if (!user) {
+        throw new Error('Usuário não encontrado.');
+    }
+    return user;
+});
+exports.findUserByEmailService = findUserByEmailService;
+const updateUserService = (email, data) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield (0, user_repository_1.findUserByEmail)(email);
+    if (!user) {
+        throw new Error('Usuário não encontrado');
+    }
+    const updatedData = Object.assign(Object.assign({}, data), { password: data.password ? yield bcrypt_1.default.hash(data.password, 10) : user.password });
+    return (0, user_repository_1.updateUser)(email, updatedData);
+});
+exports.updateUserService = updateUserService;
 const authenticateUserService = (email, password) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield (0, user_repository_1.findUserByEmail)(email);
     if (!user) {

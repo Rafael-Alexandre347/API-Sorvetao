@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authenticateUser = exports.createUser = void 0;
+exports.authenticateUser = exports.updateUser = exports.findUserByEmail = exports.createUser = void 0;
 const user_service_1 = require("../services/user.service");
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -21,6 +21,27 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.createUser = createUser;
+const findUserByEmail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { email } = req.params;
+        const user = yield (0, user_service_1.findUserByEmailService)(email);
+        return res.status(200).json(user);
+    }
+    catch (error) {
+        return res.status(400).json({ message: error.message });
+    }
+});
+exports.findUserByEmail = findUserByEmail;
+const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = yield (0, user_service_1.updateUserService)(String(req.params.email), req.body);
+        return res.status(200).json(user);
+    }
+    catch (error) {
+        return res.status(400).json({ message: error });
+    }
+});
+exports.updateUser = updateUser;
 const authenticateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, password } = req.body;

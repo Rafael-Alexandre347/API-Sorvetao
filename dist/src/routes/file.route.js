@@ -4,9 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const user_route_1 = __importDefault(require("./user.route"));
-const file_route_1 = __importDefault(require("./file.route"));
+const multer_1 = __importDefault(require("multer"));
+const upload_controller_1 = require("../controllers/upload.controller");
 const router = (0, express_1.Router)();
-router.use('/users', user_route_1.default);
-router.use('/upload', file_route_1.default);
+const upload = (0, multer_1.default)({ storage: multer_1.default.memoryStorage() });
+router.post('/', upload.single('file'), upload_controller_1.uploadFile);
 exports.default = router;

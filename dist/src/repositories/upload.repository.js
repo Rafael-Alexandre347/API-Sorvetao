@@ -12,18 +12,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUser = exports.findUserByEmail = exports.createUser = void 0;
-const user_entity_1 = __importDefault(require("../entities/user.entity"));
-const createUser = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield user_entity_1.default.create({ data });
-    return Object.assign(Object.assign({}, user), { password: undefined });
+exports.writeFileToDisk = void 0;
+const fs_extra_1 = __importDefault(require("fs-extra"));
+const path_1 = __importDefault(require("path"));
+const tempFolder = path_1.default.join(__dirname, '../../temp');
+fs_extra_1.default.ensureDirSync(tempFolder);
+const writeFileToDisk = (fileName, fileBuffer) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const filePath = path_1.default.join(tempFolder, fileName);
+        yield fs_extra_1.default.writeFile(filePath, fileBuffer);
+        return true;
+    }
+    catch (error) {
+        console.error('Erro ao salvar o arquivo:', error);
+        return false;
+    }
 });
-exports.createUser = createUser;
-const findUserByEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
-    return user_entity_1.default.findFirst({ where: { email } });
-});
-exports.findUserByEmail = findUserByEmail;
-const updateUser = (email, data) => __awaiter(void 0, void 0, void 0, function* () {
-    return user_entity_1.default.update({ where: { email }, data });
-});
-exports.updateUser = updateUser;
+exports.writeFileToDisk = writeFileToDisk;

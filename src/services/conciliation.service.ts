@@ -35,7 +35,20 @@ export const conciliateService = async (tempFile: string) => {
 	});
 	let ad = await adquirente.json();
 	ad = ad.content.transactions;
+
+	let tax = 2.5;
+
+	for(let e in vendas){
+		vendas[e].push('0')
+		if (typeof vendas[e][6] === 'string')
+			vendas[e][6] = vendas[e][6].replace("R$ ", '').replace(".","").replace(",",".");
+	}
+
 	for(let i in ad){
-		console.log(ad[i].amount);
+		for(let x in vendas){
+			if(vendas[x][7] == "0"){
+
+			}
+		}
 	}
 }
