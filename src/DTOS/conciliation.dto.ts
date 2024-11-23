@@ -1,41 +1,38 @@
-import { Decimal } from '@prisma/client/runtime/library'
-import { IsNotEmpty, IsDate, IsNumber } from 'class-validator'
+import { IsNotEmpty, IsDate, IsNumber } from "class-validator";
 
-export class saveReportDTO{
-    @IsNotEmpty()
-    @IsNumber()
-    id!:number
+export class saveReportDTO {
 
-    @IsNotEmpty()
-    vVenda!:number
-    
-    @IsNotEmpty()
-    vReal!:number
+  @IsNotEmpty()
+  nsu!:number
 
-    @IsNotEmpty()
-    @IsDate()
-    data!:string
-    
-    @IsNotEmpty()
-    taxa!:number
+  @IsNotEmpty()
+  vVenda!: number;
 
-    @IsNotEmpty()
-    pagamento!:string
+  @IsNotEmpty()
+  vReal!: number;
 
-    @IsNotEmpty()
-    bandeira!:string
+  @IsNotEmpty()
+  @IsDate()
+  data!: string;
 
-    @IsNotEmpty()
-    conciliado!:boolean
+  @IsNotEmpty()
+  taxa!: number;
+
+  @IsNotEmpty()
+  pagamento!: string;
+
+  @IsNotEmpty()
+  bandeira!: string;
+
+  @IsNotEmpty()
+  conciliado!: boolean;
 }
 
-export class getReportDTO{
-    @IsNumber()
-    id?:number
+export class getReportDTO {
+  @IsNumber()
+  id!: number;
 
-    @IsNotEmpty()
-    vReal!:number
+  vReal?: number;
 
-    @IsNotEmpty()
-    data!:string
+  data?: string;
 }

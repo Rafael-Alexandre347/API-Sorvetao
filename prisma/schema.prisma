@@ -22,9 +22,10 @@ model User {
 
 model Conciliation{
   id Int @id @default(autoincrement())
+  nsu BigInt
   vVenda Decimal
   vReal Decimal
-  data DateTime
+  data String
   taxa Decimal @default(0)
   pagamento String
   bandeira String
