@@ -6,6 +6,9 @@ export class saveReportDTO {
   nsu!:number
 
   @IsNotEmpty()
+  loja!:number
+
+  @IsNotEmpty()
   vVenda!: number;
 
   @IsNotEmpty()
@@ -29,10 +32,12 @@ export class saveReportDTO {
 }
 
 export class getReportDTO {
-  @IsNumber()
-  id!: number;
+  @IsNotEmpty()
+  loja!: number;
 
-  vReal?: number;
+  @IsNotEmpty()
+  initDate!: string;
 
-  data?: string;
+  @IsNotEmpty()
+  endDate!: string;
 }

@@ -6,14 +6,8 @@ export const saveReport = async (data:saveReportDTO) =>{
     return {...report};
 }
 
-export const getReportById = async (data:getReportDTO) => {
-    const report = Conciliation.findFirst({where:{id:data.id}});
-    return {...report};
-}
-
-export const getAllReport = async () => {
-    const report = Conciliation.findMany();
-    return {...report};
+export const getReportByLoja = async (data:getReportDTO) => {
+    return Conciliation.findMany({where:{loja:data.loja}});
 }
 
 export const deleteAll = async () => {

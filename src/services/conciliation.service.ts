@@ -1,10 +1,9 @@
-import { saveReportDTO } from "../DTOS/conciliation.dto";
+import { getReportDTO, saveReportDTO } from "../DTOS/conciliation.dto";
 import fs, { access } from "fs";
 import * as base64 from "base-64";
 import {
   saveReport,
-  getReportById,
-  getAllReport,
+  getReportByLoja,
 } from "../repositories/conciliation.repository";
 
 export const conciliateService = async (tempFile: string) => {
@@ -93,6 +92,7 @@ export const conciliateService = async (tempFile: string) => {
         vendas[x][7] = "1";
         report = {
           nsu: ad[i].nsu,
+          loja: loja,
           vVenda: Number(vendas[x][6]),
           vReal: ad[i].amount,
           data: vendas[x][3],
@@ -107,6 +107,7 @@ export const conciliateService = async (tempFile: string) => {
     if (ad[i].status != "CONCILIADO") {
       report = {
         nsu: ad[i].nsu,
+        loja: loja,
         vVenda: 0,
         vReal: ad[i].amount,
         data: ad[i].movementDate,
@@ -118,4 +119,21 @@ export const conciliateService = async (tempFile: string) => {
     }
 	saveReport(report);
   }
+  return {message:"Dados conciliados e salvos no banco!"};
+}
+
+export const getReportByDateService = async (data: getReportDTO) => {
+  const report = await getReportByLoja(data);
+  const arrayNewReport = []
+  const initDate = new Date(data.initDate);
+  const endDate = new Date(data.endDate);
+  
+  for (let i in report) {
+    let reportFilteredByDate = {...report[i],nsu:Number(report[i].nsu)};
+    const reportDate = new Date(report[i].data);
+    if (reportDate >= initDate && reportDate <= endDate) {
+      arrayNewReport.push(reportFilteredByDate);
+    }
+  }
+  return arrayNewReport;
 }

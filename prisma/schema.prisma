@@ -23,6 +23,7 @@ model User {
 model Conciliation{
   id Int @id @default(autoincrement())
   nsu BigInt
+  loja Int @default(0)
   vVenda Decimal
   vReal Decimal
   data String
