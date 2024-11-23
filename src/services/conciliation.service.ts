@@ -4,6 +4,7 @@ import * as base64 from "base-64";
 import {
   saveReport,
   getReportByLoja,
+  deleteAll,
 } from "../repositories/conciliation.repository";
 
 export const conciliateService = async (tempFile: string) => {
@@ -63,6 +64,7 @@ export const conciliateService = async (tempFile: string) => {
       vendas[e][3] = vendas[e][3].split("/")[2] +"-" +vendas[e][3].split("/")[1] +"-" +vendas[e][3].split("/")[0];
   }
   let report: saveReportDTO = new saveReportDTO();
+  let reports: saveReportDTO[] = [];
 
   for (let i in ad) {
     // console.log("Valor: "+ad[i].amount+" data: "+ad[i].movementDate);
@@ -117,9 +119,10 @@ export const conciliateService = async (tempFile: string) => {
         conciliado: false,
       };
     }
+  reports.push(report);  
 	saveReport(report);
   }
-  return {message:"Dados conciliados e salvos no banco!"};
+  return reports;
 }
 
 export const getReportByDateService = async (data: getReportDTO) => {
@@ -136,4 +139,8 @@ export const getReportByDateService = async (data: getReportDTO) => {
     }
   }
   return arrayNewReport;
+}
+
+export const deleteAllService = () => {
+  return deleteAll();
 }

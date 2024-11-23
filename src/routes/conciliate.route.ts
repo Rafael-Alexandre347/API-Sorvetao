@@ -1,11 +1,11 @@
 import { Router } from 'express'
-import { conciliate, getReportByDate } from '../controllers/conciliation.controller'
-import { deleteAll} from '../repositories/conciliation.repository';
+import { conciliate, deleteAll, getReportByDate } from '../controllers/conciliation.controller'
+import { auth } from '../middlewares/auth.middleware'
 
 const router = Router();
 
-router.post('/',conciliate);
-router.post('/getReport',getReportByDate);
-router.post('/delete',deleteAll);
+router.post('/', auth, conciliate);
+router.post('/getReport', auth, getReportByDate);
+router.post('/delete', auth, deleteAll);
 
 export default router;

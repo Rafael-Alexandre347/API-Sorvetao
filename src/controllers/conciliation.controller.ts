@@ -1,5 +1,5 @@
 import { Request, Response } from 'express' 
-import { conciliateService, getReportByDateService } from '../services/conciliation.service';
+import { conciliateService, deleteAllService, getReportByDateService } from '../services/conciliation.service';
 import { getReportDTO, saveReportDTO } from '../DTOS/conciliation.dto';
 
 
@@ -40,4 +40,13 @@ export const getReportByDate = async (req: Request, res: Response) => {
 	  console.error('Error occurred:', error);
 	  return res.status(400).json({ message: error instanceof Error ? error.message : 'An unknown error occurred' });
 	}
-  }
+}
+
+export const deleteAll = async (req: Request, res: Response) => {
+	try {
+		await deleteAllService();
+		return res.status(204).send();
+	} catch(error) {
+		return res.status(400).json({ message: error });
+	}
+}
