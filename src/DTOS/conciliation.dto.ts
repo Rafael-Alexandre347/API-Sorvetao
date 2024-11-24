@@ -1,12 +1,11 @@
 import { IsNotEmpty, IsDate, IsNumber } from "class-validator";
 
 export class saveReportDTO {
+  @IsNotEmpty()
+  nsu!: number;
 
   @IsNotEmpty()
-  nsu!:number
-
-  @IsNotEmpty()
-  loja!:number
+  loja!: number;
 
   @IsNotEmpty()
   vVenda!: number;
