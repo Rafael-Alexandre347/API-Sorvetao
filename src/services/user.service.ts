@@ -7,11 +7,21 @@ import {
 } from "../repositories/user.repository";
 import * as jose from "jose";
 
+export class CustomError extends Error {
+  statusCode: number;
+
+  constructor(message: string, statusCode: number) {
+    super(message);
+    this.statusCode = statusCode;
+    Object.setPrototypeOf(this, new.target.prototype);
+  }
+}
+
 export const createUserService = async (data: CreateUserDTO) => {
   const user = await findUserByEmail(data.email);
 
   if (user) {
-    throw new Error("Usuário já existe");
+    throw new CustomError("Usuário já existe", 400);
   }
   const password = await bcrypt.hash(data.password, 10);
 

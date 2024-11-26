@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import {
   authenticateUserService,
   createUserService,
+  CustomError,
   findUserByEmailService,
   updateUserService,
 } from "../services/user.service";
@@ -11,6 +12,9 @@ export const createUser = async (req: Request, res: Response) => {
     const user = await createUserService(req.body);
     return res.status(201).json(user);
   } catch (error) {
+    if (error instanceof CustomError) {
+      return res.status(error.statusCode).json({ message: error.message });
+    }
     return res.status(400).json({ message: error });
   }
 };
