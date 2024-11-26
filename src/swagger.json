@@ -1,0 +1,516 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API de Conciliação de Entradas",
+    "version": "1.0.0",
+    "description": "API de conciliação de entradas com autenticação JWT"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "post": {
+        "summary": "Criação de um novo usuário",
+        "description": "Cria um usuário no sistema com os dados fornecidos.",
+        "tags": ["Users"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuário criado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na criação do usuário.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{email}": {
+      "get": {
+        "summary": "Buscar usuário pelo e-mail",
+        "description": "Retorna os dados do usuário correspondente ao e-mail fornecido.",
+        "tags": ["Users"],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "description": "E-mail do usuário.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Usuário não encontrado ou erro na requisição.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Atualizar dados de um usuário",
+        "description": "Atualiza as informações de um usuário pelo e-mail.",
+        "tags": ["Users"],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "description": "E-mail do usuário.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Usuário atualizado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Usuário não encontrado ou erro na atualização.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/authenticate": {
+      "post": {
+        "summary": "Autenticar usuário",
+        "description": "Realiza autenticação do usuário com e-mail e senha, retornando um token JWT.",
+        "tags": ["Users"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Usuário autenticado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na autenticação (usuário não encontrado ou senha inválida).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/conciliate": {
+      "post": {
+        "tags": ["Conciliation"],
+        "summary": "Realiza a conciliação de vendas.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tempFile": {
+                    "type": "string",
+                    "example": "example_file.csv"
+                  }
+                },
+                "required": ["tempFile"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Conciliação realizada com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/saveReportDTO"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro ao processar a conciliação.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/conciliate/getReport": {
+      "post": {
+        "tags": ["Conciliation"],
+        "summary": "Obtém relatórios filtrados por loja e intervalo de datas.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/getReportDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Lista de relatórios.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/saveReportDTO"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro ao processar a solicitação.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/conciliate/delete": {
+      "delete": {
+        "tags": ["Conciliation"],
+        "summary": "Exclui todos os registros de conciliação.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Todos os registros foram excluídos."
+          },
+          "400": {
+            "description": "Erro ao excluir os registros.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateUserDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome do usuário."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "E-mail do usuário."
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "minLength": 6,
+            "description": "Senha do usuário (mínimo de 6 caracteres)."
+          }
+        },
+        "required": ["name", "email", "password"]
+      },
+      "UpdateUserDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome do usuário."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "E-mail do usuário."
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "minLength": 6,
+            "description": "Senha do usuário (mínimo de 6 caracteres)."
+          }
+        }
+      },
+      "saveReportDTO": {
+        "type": "object",
+        "properties": {
+          "nsu": {
+            "type": "integer",
+            "example": 123456789
+          },
+          "loja": {
+            "type": "integer",
+            "example": 13381369
+          },
+          "vVenda": {
+            "type": "number",
+            "format": "float",
+            "example": 123.45
+          },
+          "vReal": {
+            "type": "number",
+            "format": "float",
+            "example": 120.0
+          },
+          "data": {
+            "type": "string",
+            "format": "date",
+            "example": "2024-09-15"
+          },
+          "taxa": {
+            "type": "number",
+            "format": "float",
+            "example": 2.5
+          },
+          "pagamento": {
+            "type": "string",
+            "example": "Crédito"
+          },
+          "bandeira": {
+            "type": "string",
+            "example": "Visa"
+          },
+          "conciliado": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "nsu",
+          "loja",
+          "vVenda",
+          "vReal",
+          "data",
+          "taxa",
+          "pagamento",
+          "bandeira",
+          "conciliado"
+        ]
+      },
+      "getReportDTO": {
+        "type": "object",
+        "properties": {
+          "loja": {
+            "type": "integer",
+            "example": 13381369
+          },
+          "initDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2024-09-01"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2024-09-30"
+          }
+        },
+        "required": ["loja", "initDate", "endDate"]
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
